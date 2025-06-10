@@ -1,4 +1,4 @@
-export { Client } from './client';
+export { SentorClient } from './client';
 export { SentorAPIError, RateLimitError, AuthenticationError } from './errors';
 export type {
     AnalyzeRequest,

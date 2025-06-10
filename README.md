@@ -1,59 +1,96 @@
-# Sentor JavaScript SDK
+# Sentor SDK
 
-The Sentor JavaScript SDK provides a simple interface to interact with the Sentor ML API for sentiment analysis.
+A TypeScript/JavaScript SDK for interacting with the Sentor ML API for sentiment analysis. This SDK provides a simple and type-safe interface for sentiment analysis operations.
 
 ## Installation
 
 ```bash
-npm install sentor-js-sdk
+npm install sentor-sdk
 ```
+
+## Features
+
+- 🚀 TypeScript support with full type definitions
+- ⚡ Simple and intuitive API
+- 🌍 Support for multiple languages
+- 📦 Batch processing capabilities
+- 🛡️ Comprehensive error handling
+- 🔄 Real-time sentiment analysis
 
 ## Usage
 
-```javascript
-import { SentorClient } from 'sentor-js-sdk';
+### Basic Usage
+
+```typescript
+import { SentorClient } from 'sentor-sdk';
 
 // Initialize the client
 const client = new SentorClient('your-api-key');
 
 // Analyze sentiment
-const result = await client.analyzeSentiment('This product is amazing!');
+const input = 
+{
+  "docs": [
+    {
+      "doc": "Apple's new iPhone is amazing!",
+      "doc_id": "1",
+      "entities": [
+        "Apple",
+        "iPhone"
+      ]
+    },
+    {
+      "doc": "Samsung's new phone is amazing!",
+      "doc_id": "2",
+      "entities": [
+        "Samsung",
+        "phone"
+      ]
+    }
+  ]
+}
+const result = await client.analyze(input);
 console.log(result);
 ```
 
-## Features
+### Sample Output
 
-- Simple and intuitive API
-- Real-time sentiment analysis
-- Support for multiple languages
-- Batch processing capabilities
-- Comprehensive error handling
+```json
+{
+  "results": [
+    {
+      "doc_id": "1",
+      "predicted_class": 2,
+      "predicted_label": "positive",
+      "probabilities": {
+        "negative": 0.00010637386003509164,
+        "neutral": 0.0002509312762413174,
+        "positive": 0.9996427297592163
+      }
+    },
+    {
+      "doc_id": "2",
+      "predicted_class": 2,
+      "predicted_label": "positive",
+      "probabilities": {
+        "negative": 0.00010637386003509164,
+        "neutral": 0.0002509312762413174,
+        "positive": 0.9996427297592163
+      }
+    }
+  ]
+}
+
+```
 
 ## API Reference
 
-### `SentorClient`
+Please refer to the [Sentor ML API Documentation](https://ml.sentor.app) for more details.
 
-#### Constructor
+## Contributing
 
-```javascript
-new SentorClient(apiKey: string)
-```
-
-#### Methods
-
-- `analyzeSentiment(text: string): Promise<SentimentResult>`
-- `analyzeBatch(texts: string[]): Promise<SentimentResult[]>`
-
-## Error Handling
-
-```javascript
-try {
-    const result = await client.analyzeSentiment('Sample text');
-} catch (error) {
-    console.error('Error:', error.message);
-}
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-MIT License
+MIT License - see the [LICENSE](LICENSE) file for details.

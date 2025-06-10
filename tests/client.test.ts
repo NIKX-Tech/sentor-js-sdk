@@ -1,17 +1,17 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
-import { Client } from '../src/client';
+import { SentorClient } from '../src/client';
 import { AuthenticationError, RateLimitError } from '../src/errors';
 import { AnalyzeResponse, HealthResponse } from '../src/interfaces';
 
-describe('Client', () => {
+describe('SentorClient', () => {
     let mock: MockAdapter;
-    let client: Client;
+    let client: SentorClient;
 
     beforeEach(() => {
         mock = new MockAdapter(axios);
-        client = new Client('test-key');
+        client = new SentorClient('test-key');
     });
 
     afterEach(() => {

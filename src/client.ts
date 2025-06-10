@@ -6,7 +6,7 @@ import { AnalyzeRequest, AnalyzeResponse, HealthResponse } from './interfaces';
 
 import type { AxiosInstance, AxiosResponse } from 'axios';
 
-export class Client {
+export class SentorClient {
     private apiKey: string;
     private baseURL: string;
     private timeout: number;
@@ -30,12 +30,10 @@ export class Client {
         });
     }
 
-    async analyze({ docs }: AnalyzeRequest): Promise<AnalyzeResponse> {
+    async analyze(input: AnalyzeRequest): Promise<AnalyzeResponse> {
         try {
             const response: AxiosResponse<AnalyzeResponse> =
-                await this.client.post('/ml/predict', {
-                    docs,
-                });
+                await this.client.post('/ml/predict', input);
             return response.data;
         } catch (error) {
             this.handleError(error);
