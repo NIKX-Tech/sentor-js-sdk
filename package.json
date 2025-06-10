@@ -1,0 +1,32 @@
+{
+    "name": "sentor-sdk",
+    "version": "1.0.0",
+    "description": "Sentor ML SDK for JavaScript/TypeScript",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc",
+        "prepare": "npm run build",
+        "test": "jest"
+    },
+    "keywords": [
+        "sentiment analysis",
+        "sdk",
+        "javascript",
+        "api"
+    ],
+    "author": "NIKX Technologies",
+    "license": "MIT",
+    "dependencies": {
+        "axios": "^1.9.0"
+    },
+    "devDependencies": {
+        "@types/axios-mock-adapter": "^1.9.0",
+        "@types/jest": "^29.5.14",
+        "@types/node": "^20.11.24",
+        "axios-mock-adapter": "^2.1.0",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.3.4",
+        "typescript": "^5.3.3"
+    }
+}
