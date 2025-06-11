@@ -2,12 +2,6 @@
 
 A TypeScript/JavaScript SDK for interacting with the Sentor ML API for sentiment analysis. This SDK provides a simple and type-safe interface for sentiment analysis operations.
 
-## Installation
-
-```bash
-npm install sentor-sdk
-```
-
 ## Features
 
 - 🚀 TypeScript support with full type definitions
@@ -16,6 +10,30 @@ npm install sentor-sdk
 - 📦 Batch processing capabilities
 - 🛡️ Comprehensive error handling
 - 🔄 Real-time sentiment analysis
+
+## Get API key
+
+### Try with guest API key
+Get a guest API key to try the API.
+
+```bash
+curl -X 'POST' \
+  'https://ml.sentor.app/api/auth/guest-access' \
+  -H 'accept: application/json' \
+  -d ''
+```
+
+### Work like a PRO
+
+1. Go to [Sentor ML API](https://ml.sentor.app)
+2. Subscribe to the Starter plan
+3. Get your API key
+
+## Installation
+
+```bash
+npm install sentor-sdk
+```
 
 ## Usage
 
@@ -85,7 +103,8 @@ console.log(result);
 
 ## API Reference
 
-Please refer to the [Sentor ML API Documentation](https://ml.sentor.app) for more details.
+Please refer to the [Sentor ML API Documentation](https://ml.sentor.app/docs/guide/) for more details.
+You can also try the API in the [Sentor ML API Swagger Playground](https://ml.sentor.app/docs).
 
 ## Contributing
 
