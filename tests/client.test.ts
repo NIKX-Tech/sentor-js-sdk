@@ -30,6 +30,19 @@ describe('SentorClient', () => {
                         neutral: 0.03,
                         negative: 0.02,
                     },
+                    details: [
+                        {
+                            sentence_index: 0,
+                            sentence_text: 'Test text',
+                            predicted_class: 1,
+                            predicted_label: 'positive',
+                            probabilities: {
+                                positive: 0.95,
+                                neutral: 0.03,
+                                negative: 0.02,
+                            },
+                        },
+                    ],
                 },
             ],
         };
