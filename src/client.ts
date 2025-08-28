@@ -33,7 +33,7 @@ export class SentorClient {
     async analyze(input: AnalyzeRequest): Promise<AnalyzeResponse> {
         try {
             const response: AxiosResponse<AnalyzeResponse> =
-                await this.client.post('/ml/predict', input);
+                await this.client.post('/predicts', input);
             return response.data;
         } catch (error) {
             this.handleError(error);
@@ -44,7 +44,7 @@ export class SentorClient {
     async checkHealth(): Promise<HealthResponse> {
         try {
             const response: AxiosResponse<HealthResponse> =
-                await this.client.get('/health');
+                await this.client.get('/predicts/health');
             return response.data;
         } catch (error) {
             this.handleError(error);
