@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 
 import { SentorClient } from '../src/client';
 import { AuthenticationError, RateLimitError } from '../src/errors';
-import { AnalyzeResponse, HealthResponse } from '../src/interfaces';
+import { HealthResponse, PredictResponse } from '../src/interfaces';
 
 describe('SentorClient', () => {
     let mock: MockAdapter;
@@ -18,8 +18,8 @@ describe('SentorClient', () => {
         mock.restore();
     });
 
-    test('should analyze sentiment', async () => {
-        const mockResponse: AnalyzeResponse = {
+    test('should predict sentiment with default language', async () => {
+        const mockResponse: PredictResponse = {
             results: [
                 {
                     doc_id: '1',
@@ -46,9 +46,9 @@ describe('SentorClient', () => {
                 },
             ],
         };
-        mock.onPost('/ml/predict').reply(200, mockResponse);
+        mock.onPost('/predict?language=en').reply(200, mockResponse);
 
-        const result = await client.analyze({
+        const result = await client.predict({
             docs: [
                 {
                     doc_id: '1',
@@ -61,16 +61,60 @@ describe('SentorClient', () => {
         expect(result.results[0].probabilities.positive).toBe(0.95);
     });
 
+    test('should predict sentiment with specified language', async () => {
+        const mockResponse: PredictResponse = {
+            results: [
+                {
+                    doc_id: '1',
+                    predicted_class: 1,
+                    predicted_label: 'positive',
+                    probabilities: {
+                        positive: 0.95,
+                        neutral: 0.03,
+                        negative: 0.02,
+                    },
+                    details: [
+                        {
+                            sentence_index: 0,
+                            sentence_text: 'Test text',
+                            predicted_class: 1,
+                            predicted_label: 'positive',
+                            probabilities: {
+                                positive: 0.95,
+                                neutral: 0.03,
+                                negative: 0.02,
+                            },
+                        },
+                    ],
+                },
+            ],
+        };
+        mock.onPost('/predict?language=nl').reply(200, mockResponse);
+
+        const result = await client.predict({
+            docs: [
+                {
+                    doc_id: '1',
+                    doc: 'Test text',
+                    entities: [],
+                },
+            ],
+            language: 'nl',
+        });
+        expect(result.results[0].predicted_label).toBe('positive');
+        expect(result.results[0].probabilities.positive).toBe(0.95);
+    });
+
     test('should handle rate limit error', async () => {
         const mockResponse = {
             detail: 'Rate limit exceeded',
             status_code: '429',
             retry_after: 60,
         };
-        mock.onPost('/ml/predict').reply(429, mockResponse);
+        mock.onPost('/predict?language=en').reply(429, mockResponse);
 
         await expect(
-            client.analyze({
+            client.predict({
                 docs: [
                     {
                         doc_id: '1',
@@ -87,10 +131,10 @@ describe('SentorClient', () => {
             detail: 'Invalid API key',
             status_code: '401',
         };
-        mock.onPost('/ml/predict').reply(401, mockResponse);
+        mock.onPost('/predict?language=en').reply(401, mockResponse);
 
         await expect(
-            client.analyze({
+            client.predict({
                 docs: [
                     {
                         doc_id: '1',
@@ -104,7 +148,7 @@ describe('SentorClient', () => {
 
     test('should check health', async () => {
         const mockResponse: HealthResponse = { status: 'ok' };
-        mock.onGet('/health').reply(200, mockResponse);
+        mock.onGet('/predicts/health').reply(200, mockResponse);
 
         const result = await client.checkHealth();
         expect(result.status).toBe('ok');

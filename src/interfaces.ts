@@ -1,9 +1,12 @@
-export interface AnalyzeRequest {
+export type SupportedLanguage = 'en' | 'nl';
+
+export interface PredictRequest {
     docs: {
         doc_id: string;
         doc: string;
         entities: string[];
     }[];
+    language?: SupportedLanguage;
 }
 
 export interface PredictionProbabilities {
@@ -20,7 +23,7 @@ export interface SentenceDetail {
     probabilities: PredictionProbabilities;
 }
 
-export interface AnalyzeResponse {
+export interface PredictResponse {
     results: Array<{
         doc_id: string;
         predicted_class: number;
