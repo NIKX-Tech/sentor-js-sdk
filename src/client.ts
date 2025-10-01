@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { BASE_URL, TIMEOUT } from './constants';
 import { AuthenticationError, RateLimitError, SentorAPIError } from './errors';
-import { AnalyzeRequest, AnalyzeResponse, HealthResponse } from './interfaces';
+import { HealthResponse, PredictRequest, PredictResponse } from './interfaces';
 
 import type { AxiosInstance, AxiosResponse } from 'axios';
 
@@ -30,10 +30,13 @@ export class SentorClient {
         });
     }
 
-    async analyze(input: AnalyzeRequest): Promise<AnalyzeResponse> {
+    async predict(input: PredictRequest): Promise<PredictResponse> {
         try {
-            const response: AxiosResponse<AnalyzeResponse> =
-                await this.client.post('/predicts', input);
+            // Set default language to 'en' if not provided
+            const language = input.language || 'en';
+
+            const response: AxiosResponse<PredictResponse> =
+                await this.client.post(`/predict?language=${language}`, input);
             return response.data;
         } catch (error) {
             this.handleError(error);

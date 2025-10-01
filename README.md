@@ -6,7 +6,7 @@ A TypeScript/JavaScript SDK for interacting with the Sentor ML API for sentiment
 
 - 🚀 TypeScript support with full type definitions
 - ⚡ Simple and intuitive API
-- 🌍 Support for multiple languages
+- 🌍 Multi-lingual support (English & Dutch)
 - 📦 Batch processing capabilities
 - 🛡️ Comprehensive error handling
 - 🔄 Real-time sentiment analysis
@@ -66,8 +66,41 @@ const input =
     }
   ]
 }
-const result = await client.analyze(input);
+const result = await client.predict(input);
 console.log(result);
+```
+
+### Multi-lingual Support
+
+The SDK supports multiple languages for sentiment prediction. Currently supported languages are:
+
+- **English (en)** - Default language
+- **Dutch (nl)**
+
+```typescript
+// Predict sentiment in Dutch
+const dutchResult = await client.predict({
+  docs: [
+    {
+      doc: "Dit is een geweldig product!",
+      doc_id: "1",
+      entities: ["product"]
+    }
+  ],
+  language: "nl"  // Specify Dutch language
+});
+
+// Predict sentiment in English (default)
+const englishResult = await client.predict({
+  docs: [
+    {
+      doc: "This is an amazing product!",
+      doc_id: "2", 
+      entities: ["product"]
+    }
+  ]
+  // language parameter is optional, defaults to "en"
+});
 ```
 
 ### Sample Output
@@ -170,6 +203,24 @@ console.log(result);
 }
 
 ```
+
+## API Methods
+
+### `predict(input: PredictRequest): Promise<PredictResponse>`
+
+Predicts sentiment for the provided documents with optional language specification.
+
+**Parameters:**
+- `input.docs`: Array of documents to analyze
+- `input.language` (optional): Language code (`'en'` or `'nl'`). Defaults to `'en'`
+
+**Returns:** Promise with prediction results including probabilities and detailed sentence-level analysis.
+
+### `checkHealth(): Promise<HealthResponse>`
+
+Checks the health status of the Sentor ML API.
+
+**Returns:** Promise with API health status.
 
 ## API Reference
 
