@@ -216,11 +216,30 @@ Predicts sentiment for the provided documents with optional language specificati
 
 **Returns:** Promise with prediction results including probabilities and detailed sentence-level analysis.
 
-### `checkHealth(): Promise<HealthResponse>`
-
-Checks the health status of the Sentor ML API.
-
 **Returns:** Promise with API health status.
+
+### `cluster(input: ClusteringRequest, language?: string): Promise<ClusteringResponse>`
+
+Clusters documents based on their content similarity using BERTopic.
+
+**Parameters:**
+- `input.documents`: Array of documents to cluster (minimum 5 required)
+- `input.n_clusters` (optional): Precise number of clusters to form
+- `language` (optional): Language code (`'en'` or `'nl'`). Defaults to `'en'`
+
+**Returns:** Promise with clustering results including clusters, total documents, and outlier counts.
+
+### `generateTopicName(input: TopicNamingRequest, language?: string): Promise<TopicNamingResponse>`
+
+Generates descriptive topic names for a cluster using advanced LLM.
+
+**Parameters:**
+- `input.cluster_id`: ID of the cluster to name
+- `input.documents`: Documents belonging to the cluster
+- `input.entities` (optional): Specific entities to exclude from name
+- `language` (optional): Language code (`'en'` or `'nl'`). Defaults to `'en'`
+
+**Returns:** Promise with the generated topic name and method used.
 
 ## API Reference
 

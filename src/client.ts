@@ -2,7 +2,15 @@ import axios from 'axios';
 
 import { BASE_URL, TIMEOUT } from './constants';
 import { AuthenticationError, RateLimitError, SentorAPIError } from './errors';
-import { HealthResponse, PredictRequest, PredictResponse } from './interfaces';
+import {
+    ClusteringRequest,
+    ClusteringResponse,
+    HealthResponse,
+    PredictRequest,
+    PredictResponse,
+    TopicNamingRequest,
+    TopicNamingResponse
+} from './interfaces';
 
 import type { AxiosInstance, AxiosResponse } from 'axios';
 
@@ -36,7 +44,29 @@ export class SentorClient {
             const language = input.language || 'en';
 
             const response: AxiosResponse<PredictResponse> =
-                await this.client.post(`/predict?language=${language}`, input);
+                await this.client.post(`/predicts?language=${language}`, input);
+            return response.data;
+        } catch (error) {
+            this.handleError(error);
+            throw error;
+        }
+    }
+
+    async cluster(input: ClusteringRequest, language: string = 'en'): Promise<ClusteringResponse> {
+        try {
+            const response: AxiosResponse<ClusteringResponse> =
+                await this.client.post(`/predicts/cluster?language=${language}`, input);
+            return response.data;
+        } catch (error) {
+            this.handleError(error);
+            throw error;
+        }
+    }
+
+    async generateTopicName(input: TopicNamingRequest, language: string = 'en'): Promise<TopicNamingResponse> {
+        try {
+            const response: AxiosResponse<TopicNamingResponse> =
+                await this.client.post(`/predicts/topic-name?language=${language}`, input);
             return response.data;
         } catch (error) {
             this.handleError(error);
