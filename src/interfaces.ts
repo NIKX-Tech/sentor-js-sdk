@@ -17,6 +17,7 @@ export interface ClusterDocument {
 
 export interface ClusteringRequest {
     documents: ClusterDocument[];
+    language?: SupportedLanguage;
     n_clusters?: number;
     projectId?: string;
 }
@@ -55,7 +56,6 @@ export interface TopicNamingResponse {
     topic_name: string;
     document_count: number;
     generation_method: string;
-    api_key_source: string;
 }
 
 export interface PredictionProbabilities {
@@ -72,26 +72,33 @@ export interface SentenceDetail {
     probabilities: PredictionProbabilities;
 }
 
+export interface EntitySentiment {
+    entity: string;
+    sentiment: 'positive' | 'negative' | 'neutral';
+    score: number;
+}
+
+export interface PredictResultItem {
+    doc_id: string;
+    predicted_class: number;
+    predicted_label: string;
+    probabilities: PredictionProbabilities;
+    details: SentenceDetail[];
+    entity_sentiments?: EntitySentiment[];
+}
+
 export interface PredictResponse {
-    results: Array<{
-        doc_id: string;
-        predicted_class: number;
-        predicted_label: string;
-        probabilities: PredictionProbabilities;
-        details: SentenceDetail[];
-    }>;
+    results: PredictResultItem[];
 }
 
 export interface HealthResponse {
     status: string;
+    version?: string;
+    llm_status?: string;
 }
 
 export interface ErrorResponse {
     status_code?: string;
     detail?: string;
     retry_after?: number;
-}
-
-export interface RapidAPIAuthenticationRequest {
-    email: string;
 }
