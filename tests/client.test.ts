@@ -46,7 +46,7 @@ describe('SentorClient', () => {
                 },
             ],
         };
-        mock.onPost('/predict?language=en').reply(200, mockResponse);
+        mock.onPost('/predicts?language=en').reply(200, mockResponse);
 
         const result = await client.predict({
             docs: [
@@ -89,7 +89,7 @@ describe('SentorClient', () => {
                 },
             ],
         };
-        mock.onPost('/predict?language=nl').reply(200, mockResponse);
+        mock.onPost('/predicts?language=nl').reply(200, mockResponse);
 
         const result = await client.predict({
             docs: [
@@ -111,7 +111,7 @@ describe('SentorClient', () => {
             status_code: '429',
             retry_after: 60,
         };
-        mock.onPost('/predict?language=en').reply(429, mockResponse);
+        mock.onPost('/predicts?language=en').reply(429, mockResponse);
 
         await expect(
             client.predict({
@@ -131,7 +131,7 @@ describe('SentorClient', () => {
             detail: 'Invalid API key',
             status_code: '401',
         };
-        mock.onPost('/predict?language=en').reply(401, mockResponse);
+        mock.onPost('/predicts?language=en').reply(401, mockResponse);
 
         await expect(
             client.predict({

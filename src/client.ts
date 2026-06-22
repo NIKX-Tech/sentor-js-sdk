@@ -88,12 +88,13 @@ export class SentorClient {
     private handleError(error: any): void {
         if (error.response) {
             const { status, data } = error.response;
+            const body = data || {};
             if (status === 429) {
-                throw new RateLimitError(data);
+                throw new RateLimitError(body);
             } else if (status === 401) {
-                throw new AuthenticationError(data);
+                throw new AuthenticationError(body);
             } else {
-                throw new SentorAPIError(data);
+                throw new SentorAPIError(body);
             }
         } else {
             throw new Error(error.message);
