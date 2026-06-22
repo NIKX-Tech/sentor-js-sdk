@@ -1,255 +1,213 @@
-# Sentor SDK
+<!-- markdownlint-disable MD033 -->
+# Sentor JS/TS SDK
 
-A TypeScript/JavaScript SDK for interacting with the Sentor ML API for sentiment analysis. This SDK provides a simple and type-safe interface for sentiment analysis operations.
+**Official JavaScript/TypeScript SDK for the Sentor API — entity-based sentiment analysis, document clustering, and topic naming.**
 
-## Features
+[![npm](https://img.shields.io/npm/v/sentor-sdk?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/package/sentor-sdk)
+[![License](https://img.shields.io/github/license/NIKX-Tech/sentor-js-sdk?style=flat-square&color=blue)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/NIKX-Tech/sentor-js-sdk?style=flat-square&color=yellow)](https://github.com/NIKX-Tech/sentor-js-sdk/stargazers)
+<br>
+[![Website](https://img.shields.io/badge/website-sentor.app-5546FA?style=flat-square&logo=google-chrome&logoColor=white)](https://sentor.app)
+[![Dashboard](https://img.shields.io/badge/get%20api%20key-dashboard.sentor.app-5546FA?style=flat-square)](https://dashboard.sentor.app/settings?tab=api-access)
+[![Docs](https://img.shields.io/badge/docs-sentor.app%2Fdocs-5546FA?style=flat-square)](https://sentor.app/docs)
 
-- 🚀 TypeScript support with full type definitions
-- ⚡ Simple and intuitive API
-- 🌍 Multi-lingual support (English & Dutch)
-- 📦 Batch processing capabilities
-- 🛡️ Comprehensive error handling
-- 🔄 Real-time sentiment analysis
+Stop guessing why ratings drop. Sentor pinpoints exactly how customers feel about specific entities — brands, products, features, competitors — using fine-tuned BERT models trained for aspect-based sentiment analysis.
 
-## Get API key
+---
 
-### Work like a PRO
+## Table of Contents
 
-1. Go to [Sentor ML API](https://sentor.app)
-2. Subscribe to the Starter plan
-3. Get your API key
+- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [API Reference](#-api-reference)
+  - [predict()](#predictinput)
+  - [cluster()](#clusterinput-language)
+  - [generateTopicName()](#generatetopicnameinput-language)
+  - [checkHealth()](#checkhealth)
+- [Error Handling](#-error-handling)
+- [Rate Limits](#-rate-limits)
 
-## Installation
+---
+
+## 📦 Installation
 
 ```bash
 npm install sentor-sdk
+# or
+yarn add sentor-sdk
 ```
 
-## Usage
+Get a free API key at [dashboard.sentor.app](https://dashboard.sentor.app/settings?tab=api-access).
 
-### Basic Usage
+---
+
+## 🚀 Quick Start
 
 ```typescript
 import { SentorClient } from 'sentor-sdk';
 
-// Initialize the client
-const client = new SentorClient('your-api-key');
+const client = new SentorClient('your_api_key');
 
-// Analyze sentiment
-const input = 
-{
-  "docs": [
-    {
-      "doc": "In the competitive landscape of consumer electronics, Apple and Samsung continue to lead the market with innovative products and strong brand loyalty. While Apple focuses on a tightly integrated ecosystem with devices like the iPhone, iPad, and Mac, Samsung excels in offering a wide range of options across various price points, especially in its Galaxy smartphone lineup. Both companies push the boundaries of technology, from cutting-edge chipsets to advanced camera systems, often setting industry trends that others follow.",
-      "doc_id": "0",
-      "entities": [
-        "Apple",
-        "Samsung",
-        "camera"
-      ]
-    },
-    {
-      "doc": "Apple's new iPhone is amazing!",
-      "doc_id": "1",
-      "entities": [
-        "Apple",
-        "iPhone"
-      ]
-    },
-    {
-      "doc": "Samsung's new phone is amazing!",
-      "doc_id": "2",
-      "entities": [
-        "Samsung",
-        "phone"
-      ]
+const results = await client.predict({
+    docs: [
+        {
+            doc_id: 'review-1',
+            doc: "Apple's new iPhone is amazing but the price is ridiculous.",
+            entities: ['Apple', 'iPhone', 'price'],
+        },
+    ],
+});
+
+for (const item of results.results) {
+    console.log(item.doc_id, item.predicted_label);
+    for (const es of item.entity_sentiments ?? []) {
+        console.log(`  ${es.entity}: ${es.sentiment} (${es.score.toFixed(2)})`);
     }
-  ]
 }
-const result = await client.predict(input);
-console.log(result);
 ```
 
-### Multi-lingual Support
+---
 
-The SDK supports multiple languages for sentiment prediction. Currently supported languages are:
+## 📖 API Reference
 
-- **English (en)** - Default language
-- **Dutch (nl)**
+### `predict(input)`
+
+Score sentiment toward named entities in one or more documents.
 
 ```typescript
-// Predict sentiment in Dutch
-const dutchResult = await client.predict({
-  docs: [
-    {
-      doc: "Dit is een geweldig product!",
-      doc_id: "1",
-      entities: ["product"]
-    }
-  ],
-  language: "nl"  // Specify Dutch language
-});
-
-// Predict sentiment in English (default)
-const englishResult = await client.predict({
-  docs: [
-    {
-      doc: "This is an amazing product!",
-      doc_id: "2", 
-      entities: ["product"]
-    }
-  ]
-  // language parameter is optional, defaults to "en"
+const results = await client.predict({
+    docs: [
+        {
+            doc_id: 'r1',
+            doc: "Samsung's camera is great but battery life is poor.",
+            entities: ['Samsung', 'camera', 'battery life'],
+        },
+    ],
+    language: 'en', // "en" | "nl", default "en"
 });
 ```
 
-### Sample Output
+**Response shape:**
 
-```json
+```typescript
 {
-  "results": [
-    {
-      "doc_id": "0",
-      "predicted_class": 2,
-      "predicted_label": "positive",
-      "probabilities": {
-        "negative": 0.00007679959526285529,
-        "neutral": 0.0002924697764683515,
-        "positive": 0.9996306896209717
-      },
-      "details": [
+    results: [
         {
-          "sentence_index": 0,
-          "sentence_text": "In the competitive landscape of consumer electronics, Apple and Samsung continue to lead the market with innovative products and strong brand loyalty.",
-          "predicted_class": 2,
-          "predicted_label": "positive",
-          "probabilities": {
-            "negative": 0.00009389198385179043,
-            "neutral": 0.00032428017584607005,
-            "positive": 0.9995818734169006
-          }
+            doc_id: 'r1',
+            predicted_class: 0,         // 0=negative, 1=neutral, 2=positive
+            predicted_label: 'negative',
+            probabilities: { negative: 0.72, neutral: 0.18, positive: 0.10 },
+            details: [...],             // per-sentence breakdown
+            entity_sentiments: [
+                { entity: 'Samsung', sentiment: 'neutral', score: 0.61 },
+                { entity: 'camera', sentiment: 'positive', score: 0.88 },
+                { entity: 'battery life', sentiment: 'negative', score: 0.91 },
+            ],
         },
-        {
-          "sentence_index": 1,
-          "sentence_text": "While Apple focuses on a tightly integrated ecosystem with devices like the iPhone, iPad, and Mac, Samsung excels in offering a wide range of options across various price points, especially in its Galaxy smartphone lineup.",
-          "predicted_class": 2,
-          "predicted_label": "positive",
-          "probabilities": {
-            "negative": 0.00005746580063714646,
-            "neutral": 0.00012963586777914315,
-            "positive": 0.99981290102005
-          }
-        },
-        {
-          "sentence_index": 2,
-          "sentence_text": "Both companies push the boundaries of technology, from cutting-edge chipsets to advanced camera systems, often setting industry trends that others follow.",
-          "predicted_class": 2,
-          "predicted_label": "positive",
-          "probabilities": {
-            "negative": 0.00006366783054545522,
-            "neutral": 0.00044553453335538507,
-            "positive": 0.9994907379150391
-          }
-        }
-      ]
-    },
-    {
-      "doc_id": "1",
-      "predicted_class": 2,
-      "predicted_label": "positive",
-      "probabilities": {
-        "negative": 0.00010637375817168504,
-        "neutral": 0.0002509312762413174,
-        "positive": 0.9996427297592163
-      },
-      "details": [
-        {
-          "sentence_index": 0,
-          "sentence_text": "Apple's new iPhone is amazing!",
-          "predicted_class": 2,
-          "predicted_label": "positive",
-          "probabilities": {
-            "negative": 0.00010637375817168504,
-            "neutral": 0.0002509312762413174,
-            "positive": 0.9996427297592163
-          }
-        }
-      ]
-    },
-    {
-      "doc_id": "2",
-      "predicted_class": 2,
-      "predicted_label": "positive",
-      "probabilities": {
-        "negative": 0.00010637375817168504,
-        "neutral": 0.0002509312762413174,
-        "positive": 0.9996427297592163
-      },
-      "details": [
-        {
-          "sentence_index": 0,
-          "sentence_text": "Samsung's new phone is amazing!",
-          "predicted_class": 2,
-          "predicted_label": "positive",
-          "probabilities": {
-            "negative": 0.00010637375817168504,
-            "neutral": 0.0002509312762413174,
-            "positive": 0.9996427297592163
-          }
-        }
-      ]
-    }
-  ]
+    ],
 }
-
 ```
 
-## API Methods
+**Supported languages:** `en` (English), `nl` (Dutch)
 
-### `predict(input: PredictRequest): Promise<PredictResponse>`
+---
 
-Predicts sentiment for the provided documents with optional language specification.
+### `cluster(input, language?)`
 
-**Parameters:**
-- `input.docs`: Array of documents to analyze
-- `input.language` (optional): Language code (`'en'` or `'nl'`). Defaults to `'en'`
+Group 5+ documents into thematic clusters using BERTopic + HDBSCAN.
 
-**Returns:** Promise with prediction results including probabilities and detailed sentence-level analysis.
+```typescript
+const results = await client.cluster(
+    {
+        documents: [
+            { doc_id: 'r1', text: 'Shipping was incredibly fast.', entities: ['shipping'] },
+            // ... at least 5 documents
+        ],
+    },
+    'en'
+);
 
-**Returns:** Promise with API health status.
+for (const cluster of results.clusters) {
+    console.log(cluster.cluster_id, cluster.document_count, cluster.top_words);
+}
+// cluster_id -1 = outliers that did not fit any topic
+```
 
-### `cluster(input: ClusteringRequest, language?: string): Promise<ClusteringResponse>`
+---
 
-Clusters documents based on their content similarity using BERTopic.
+### `generateTopicName(input, language?)`
 
-**Parameters:**
-- `input.documents`: Array of documents to cluster (minimum 5 required)
-- `input.n_clusters` (optional): Precise number of clusters to form
-- `language` (optional): Language code (`'en'` or `'nl'`). Defaults to `'en'`
+Generate a 3–5 word label for a cluster using an LLM.
 
-**Returns:** Promise with clustering results including clusters, total documents, and outlier counts.
+```typescript
+const result = await client.generateTopicName(
+    {
+        cluster_id: 0,
+        documents: cluster.documents,
+        top_words: cluster.top_words,
+        entities: ['BrandName'],
+    },
+    'en'
+);
+console.log(result.topic_name); // e.g. "Shipping Delay Complaints"
+```
 
-### `generateTopicName(input: TopicNamingRequest, language?: string): Promise<TopicNamingResponse>`
+---
 
-Generates descriptive topic names for a cluster using advanced LLM.
+### `checkHealth()`
 
-**Parameters:**
-- `input.cluster_id`: ID of the cluster to name
-- `input.documents`: Documents belonging to the cluster
-- `input.entities` (optional): Specific entities to exclude from name
-- `language` (optional): Language code (`'en'` or `'nl'`). Defaults to `'en'`
+```typescript
+const health = await client.checkHealth();
+// { status: 'healthy', version: '...', llm_status: 'available' }
+```
 
-**Returns:** Promise with the generated topic name and method used.
+---
 
-## API Reference
+## ⚠️ Error Handling
 
-Please refer to the [Sentor ML API Documentation](https://sentor.app/docs/#/guide/) for more details.
-You can also try the API in the [Sentor ML API Swagger Playground](https://sentor.app/docs).
+```typescript
+import { SentorClient, SentorAPIError, RateLimitError, AuthenticationError } from 'sentor-sdk';
 
-## Contributing
+const client = new SentorClient('your_api_key');
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+try {
+    const results = await client.predict({ docs: [...] });
+} catch (error) {
+    if (error instanceof AuthenticationError) {
+        console.error('Invalid API key');
+    } else if (error instanceof RateLimitError) {
+        console.error(`Rate limit hit. Retry after ${error.retryAfter}s`);
+    } else if (error instanceof SentorAPIError) {
+        console.error(`API error: ${error.message} (${error.code})`);
+    }
+}
+```
 
-## License
+---
 
-MIT License - see the [LICENSE](LICENSE) file for details.
+## 📊 Rate Limits
+
+| Plan | Per Minute | Per Day | Per Month |
+|------|-----------|---------|-----------|
+| **Free** | 5 | 100 | 1,000 |
+| **Starter** | 20 | 600 | 5,000 |
+| **Growth** | 60 | 3,000 | 25,000 |
+| **Business** | 200 | 10,000 | 100,000 |
+| **Enterprise** | 500 | 30,000 | 500,000 |
+
+[View full pricing →](https://sentor.app/pricing)
+
+---
+
+## 🔗 Links
+
+- [Sentor Dashboard](https://dashboard.sentor.app) — manage API keys and usage
+- [API Documentation](https://sentor.app/docs)
+- [npm Package](https://www.npmjs.com/package/sentor-sdk)
+- [Support](mailto:sentor@nikx.one)
+
+---
+
+<p align="center">
+  Built by <a href="https://nikx.one">NIKX Technologies B.V.</a>
+</p>
