@@ -4,8 +4,8 @@
 **Official JavaScript/TypeScript SDK for the Sentor API — entity-based sentiment analysis, document clustering, and topic naming.**
 
 [![npm](https://img.shields.io/npm/v/sentor-sdk?style=flat-square&logo=npm&logoColor=white)](https://www.npmjs.com/package/sentor-sdk)
-[![License](https://img.shields.io/github/license/NIKX-Tech/sentor-ml-js-sdk?style=flat-square&color=blue)](https://opensource.org/licenses/MIT)
-[![GitHub Stars](https://img.shields.io/github/stars/NIKX-Tech/sentor-ml-js-sdk?style=flat-square&color=yellow)](https://github.com/NIKX-Tech/sentor-ml-js-sdk/stargazers)
+[![License](https://img.shields.io/github/license/NIKX-Tech/sentor-js-sdk?style=flat-square&color=blue)](https://opensource.org/licenses/MIT)
+[![GitHub Stars](https://img.shields.io/github/stars/NIKX-Tech/sentor-js-sdk?style=flat-square&color=yellow)](https://github.com/NIKX-Tech/sentor-js-sdk/stargazers)
 <br>
 [![Website](https://img.shields.io/badge/website-sentor.app-5546FA?style=flat-square&logo=google-chrome&logoColor=white)](https://sentor.app)
 [![Dashboard](https://img.shields.io/badge/get%20api%20key-dashboard.sentor.app-5546FA?style=flat-square)](https://dashboard.sentor.app/settings?tab=api-access)

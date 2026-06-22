@@ -25,7 +25,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/NIKX-Tech/sentor-ml-js-sdk.git"
+        "url": "https://github.com/NIKX-Tech/sentor-js-sdk.git"
     },
     "homepage": "https://sentor.app/docs",
     "dependencies": {
